@@ -2,8 +2,10 @@
 #include <list>
 #include <iostream>
 #include <assert.h>
+#include <stdarg.h>
 using namespace std;
 #include "Vector.h"
+#include "Alloc.h"
 void PrintVector (vector< int>& v ) 
 {
 	vector<int >::iterator it = v .begin();
@@ -15,6 +17,7 @@ void PrintVector (vector< int>& v )
 }
 void Test1 () 
 {
+	cout<<sizeof(size_t)<<endl;
 	vector<int > v1;
 	v1.push_back (1);
 	v1.push_back (2); 
@@ -31,8 +34,7 @@ void Test1 ()
 	{
 		if(*it% 2 == 0)
 			//erase之后it指向删除元素的下一个，如果不进行 it= 那么这个迭代器的指针就会丢失
-		    //it =
-			v1 .erase(it++); 
+		    it =v1 .erase(it++); 
 		else
 			++ it; 
 	}
@@ -76,5 +78,8 @@ int main()
 {
 	//Test1();
 	//Test2();
-	testvector();
+	//testvector();
+	//testalloc1();
+	//Testalloc2();
+	Testalloc3();
 }
