@@ -6,46 +6,40 @@ class Vector
 public:
 	typedef T ValueType;
 	typedef ValueType* Pointer;
-	/*****迭代器的设计*********/
 	typedef ValueType* Iterator;
-	typedef  const ValueType* ConstIterator;
 	typedef ValueType& Reference;
-	typedef const ValueType& ConstReference;
-	typedef size_t SizeType;
-	typedef ptrdiff_t DifferenceType;
-	/*typedef ReverseIterator<ConstIterator> ConstReverseIterator;
-	typedef ReverseIterator<Iterator> ReverseIterator;*/
-	/**************************/
+	
 protected:
-	Iterator _start;
-	Iterator _finish;
-	Iterator _EndOfStorage;
+	//[)
+	Iterator _start;//vector起始位置
+	Iterator _finish;//vector末尾位置的下一位置
+	Iterator _EndOfStorage;//容量结束的位置
 public:
 	Iterator Begin()
 	{
 		return _start;
 	}
-	ConstIterator Begin() const
+	const Iterator Begin() const
 	{
 		return _start;
 	}
 	Iterator end()
 	{
-		return Finish;
+		return _finish;
 	}
-	ConstIterator End() const
+	const Iterator End() const
 	{
 		return _finish;
 	}
-	SizeType Size() const
+	size_t Size() const
 	{
 		return _finish-_start;
 	}
-	SizeType MaxSize() const
+	size_t MaxSize() const
 	{
-		return SizeType(-1)/sizeof(T);
+		return size_t(-1)/sizeof(T);
 	}
-	SizeType Capacity() const
+	size_t Capacity() const
 	{
 		return _EndOfStorage-_start;
 	}
@@ -53,11 +47,11 @@ public:
 	{
 		return _finish==_start;
 	}
-	Reference operator[](SizeType n)
+	Reference operator[](size_t n)
 	{
 		return *(_start+n);
 	}
-	ConstReference operator[](SizeType n) const
+	const Reference operator[](size_t n) const
 	{
 		return *(_start+n);
 	}
@@ -71,7 +65,7 @@ public:
 	{
 		return *_start;
 	}
-	ConstReference Front() const
+	const Reference Front() const
 	{
 		return *_start;
 	}
@@ -79,10 +73,11 @@ public:
 	{
 		return *(_finish-1);
 	}
-	ConstReference Back() const
+	const Reference Back() const
 	{
 		return *(_finish-1);
 	}
+	//增容
 	void _CheckExpand()
 	{
 		if(_finish==_EndOfStorage)

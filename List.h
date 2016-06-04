@@ -8,63 +8,59 @@ struct ListNode
 	T _data;
 };
 
-template<class T,class Ref,class Ptr>
+template<class T>
 struct ListIterator
 {
-	typedef ListIterator<T,T&,T*> Iterator;
-	typedef ListIterator<const T,const T&,const T*> ConstIterator;
-	typedef ListIterator<T,Ref,Ptr> Self;
-	
-	//typedef BidirectionalIteratorTag IteratorCategory;
+	typedef ListIterator<T> Iterator;
 	typedef T ValueType;
-	typedef Ptr Pointer;
-	typedef Ref Reference;
-	typedef ListNode<T> LinkType;
-	typedef size_t SizeType;
-	typedef ptrdiff_t DiffrenenceType;
+	typedef T* Pointer;
+	typedef T& Reference;
+	//???为什么不用LiskNode<T> LinkType
+	typedef ListNode<T>* LinkType;
 
-	LinkType node;
+	//LinkNode<T>* _node;
+	LinkType _node;
 
-	ListIterator(LinkType x)
-		:node(x)
+	ListIterator(LinkType node=NULL)
+		:_node(node)
 	{}
-	ListIterator()
-	{}
-
-	bool operator==(const Self &x)
+	bool operator==(const Iterator &x)
 	{
-		return node==x.node;
+		return _node==x._node;
 	}
-	bool operator!=(const Self &x)
+	bool operator!=(const Iterator &x)
 	{
-		return node!=x.node;
+		return _node!=x._node;
 	}
 	Reference operator*()const
 	{
-		return node->_data;
+		return _node->_data;
 	}
 	Pointer operator->()const
 	{
-		return node;
+		//????
+		//&(_node->data)
+		return &(operator*());
 	}
-	Self& operator++()
+	Iterator& operator++()
 	{
-		node=node->_next;
-		return node;
+		_node=_node->_next;
+		return *this;
 	}
-	Self& operator++(int)
+	Iterator& operator++(int)
 	{
-		Self tmp(node);
+		Iterator tmp(node);
 		++*this;
 		return tmp;
 	}
-	Self& operator--()
+	Iterator& operator--()
 	{
 		node=node->_prev;
+		return *this;
 	}
-	Self& operator--(int)
+	Iterator& operator--(int)
 	{
-		Self tmp(node);
+		Iterator tmp(node);
 		--*this;
 		return tmp;
 	}
@@ -75,20 +71,11 @@ template <class T>
 class List
 {
 public:
-	typedef ListNode<T> LinkNode;
-	typedef T ValueType;
-	typedef ValueType* Pointer;
-	typedef const Pointer ConstPointer;
-	typedef ValueType& Reference ;
-	typedef const Reference ConstReference;
-	typedef LinkNode* LinkType;
-	typedef size_t SizeType;
-	typedef ptrdiff_t DiffrenceType;
-
-	typedef ListIterator<T,T&,T*> Iterator;
-	typedef ListIterator<const T,const T&,const T *> ConstIterator;
+	typedef ListIterator<T> Iterator;
+	typedef T valueType;
+	typedef ListNode<T>* LinkType;
 protected:
-	//哨兵节点，不做存储对象用
+	//头节点非数据节点
 	LinkType _head;
 public:
 	List()
@@ -104,7 +91,7 @@ public:
 	{
 		return _head->_next;
 	}
-	ConstIterator Begin() const
+	const Iterator Begin() const
 	{
 		return _head->_next;
 	}
@@ -112,7 +99,7 @@ public:
 	{
 		return _head;
 	}
-	ConstIterator End() const
+	const Iterator End() const
 	{
 		return _head;
 	}
@@ -133,11 +120,17 @@ public:
 	//在pos前面插入，返回插入节点位置
 	Iterator Insert(Iterator pos,const T& x)
 	{
+		//新建一个tmp节点
 		LinkType tmp=new LinkNode(x);
+		//找到pos前面的节点设为prev
 		LinkType prev=pos.node->_prev;
+		//   tmp---->pos
 		tmp->_next=pos.node;
+		//   prev<----tmp
 		tmp->_prev=prev;
+		//   prev---->tmp
 		prev->_next=tmp;
+		//   tmp<----pos
 		pos.node->_prev=tmp;
 		//因为 ListIterator（node x）
 		//所以tmp到Iterator有隐式转换会产生匿名对象
@@ -156,7 +149,7 @@ public:
 	}
 	void PushBack(const T& x)
 	{
-		Insert(_head);
+		Insert(_head,x);
 	}
 	void PopBack()
 	{

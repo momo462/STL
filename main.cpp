@@ -78,8 +78,8 @@ int main()
 {
 	//Test1();
 	//Test2();
-	//testvector();
+	testvector();
 	//testalloc1();
 	//Testalloc2();
-	Testalloc3();
+	//Testalloc3();
 }
